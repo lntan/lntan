@@ -1,20 +1,12 @@
 ---
-title: Blogging Like a Hacker
+layout: default
 ---
 
-<!DOCTYPE HTML>
-<html>
-  <head>
-    <title>{{ page.title }}</title>
-  </head>
-  <body>
-    <h1>Algorithms</h1>
-    <ul>
-      {% for post in site.categories.algorithms %}
-        <li>
-          <a href="{{ post.url }}">{{ post.title }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  </body>
-</html>
+<h3>Algorithms</h3>
+<ul class="list-unstyled">
+  {% for post in site.categories.algorithms %}
+    <li>
+      <a href="{{ post.url }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
