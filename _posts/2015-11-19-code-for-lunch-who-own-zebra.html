@@ -1,0 +1,140 @@
+---
+title: Who owns Zebra?
+categories: code-for-lunch
+layout: default
+---
+
+<h3>Description</h4>
+<img src="/images/code-for-lunch/who-owns-zebra/description.png" alt="Description" ></img>
+
+<h3>Solution</h4>
+{% highlight ruby %}
+require 'csv'
+def no_duplicate_attributes?(*args)
+  args.inject([]) do |all_attributes, arg|
+    attributes = arg.values
+    attributes.pop
+    all_attributes += attributes
+    all_attributes
+  end.uniq.length == args.length * 5
+end
+
+def doctor_next_fox?(five_houses)
+  five_houses.each_with_index do |house, index|
+    if house[:pet] == "fox"
+      if !five_houses[index - 1].nil? && five_houses[index - 1][:job] == "doctor"
+        return true
+      end
+      if !five_houses[index + 1].nil? && five_houses[index + 1][:job] == "doctor"
+        return true
+      end
+    end
+  end
+  false
+end
+
+def diplomat_next_horse?(five_houses)
+  five_houses.each_with_index do |house, index|
+    if house[:pet] == "horse"
+      if !five_houses[index - 1].nil? && five_houses[index - 1][:job] == "diplomat"
+        return true
+      end
+      if !five_houses[index + 1].nil? && five_houses[index + 1][:job] == "diplomat"
+        return true
+      end
+    end
+  end
+  false
+end
+
+nationalities = ["Norwegian", "English", "Spaniard", "Ukrainian", "Japanese"]
+colors = ["red", "green", "ivory", "yellow", "blue"]
+drinks = ["water", "tea", "coffee", "milk", "orange juice"]
+jobs =  ["engineer", "diplomat", "doctor", "teacher", "carpenter"]
+pets = ["zebra", "dog", "snail", "fox", "horse"]
+
+houses_grouped_by_position = nationalities.product(colors, drinks, jobs, pets).map do |house|
+  {
+    nationality: house[0],
+    color: house[1],
+    drink: house[2],
+    job: house[3],
+    pet: house[4]
+  }
+end.delete_if do |house|
+  ([house[:nationality], house[:color]] & ["English", "red"]).length == 1 || #1
+  ([house[:nationality], house[:pet]] &  ["Spaniard", "dog"]).length == 1 || #2
+  ([house[:drink], house[:color]] &  ["coffee", "green"]).length == 1 || #3
+  ([house[:nationality], house[:drink]] &  ["Ukrainian", "tea"]).length == 1 || #4
+  ([house[:job], house[:pet]] &  ["engineer", "snail"]).length == 1 || #6
+  ([house[:job], house[:color]] &  ["diplomat", "yellow"]).length == 1 || #7
+  ([house[:job], house[:drink]] &  ["teacher", "orange juice"]).length == 1 || #12
+  ([house[:job], house[:nationality]] &  ["carpenter", "Japanese"]).length == 1 #13
+end.product([1, 2, 3, 4, 5]).map do |house_info_and_position_array|
+  house_info_and_position_array[0].merge(position: house_info_and_position_array[1])
+end.delete_if do |house|
+  ([house[:nationality], house[:position]] & ["Norwegian", 1]).length == 1 || #9
+  ([house[:color], house[:position]] & ["blue", 2]).length == 1 || #14
+  ([house[:drink], house[:position]] & ["milk", 3]).length == 1 || #8
+  ([house[:color], house[:position]] & ["ivory", 1]).length == 2 || #5
+  ([house[:color], house[:position]] & ["ivory", 2]).length == 2 || #5
+  ([house[:color], house[:position]] & ["ivory", 5]).length == 2 || #5
+  ([house[:color], house[:position]] & ["green", 1]).length == 2 || #5
+  ([house[:color], house[:position]] & ["green", 2]).length == 2 || #5
+  ([house[:color], house[:position]] & ["green", 3]).length == 2 || #5
+  ([house[:job], house[:pet]] & ["doctor", "fox"]).length == 2 || #10
+  ([house[:job], house[:pet]] & ["diplomat", "horse"]).length == 2 #11
+end.group_by{|house| house[:position]}
+
+houses_1 = houses_grouped_by_position[1]
+houses_2 = houses_grouped_by_position[2]
+houses_3 = houses_grouped_by_position[3]
+houses_4 = houses_grouped_by_position[4]
+houses_5 = houses_grouped_by_position[5]
+houses_1.each do |house_1|
+  houses_2.each do |house_2|
+    if no_duplicate_attributes?(house_1, house_2)
+      houses_3.each do |house_3|
+        if no_duplicate_attributes?(house_1, house_2, house_3)
+          houses_4.each do |house_4|
+            if no_duplicate_attributes?(house_1, house_2, house_3, house_4)
+              houses_5.each do |house_5|
+                if no_duplicate_attributes?(house_1, house_2, house_3, house_4, house_5)
+                  house_array = [house_1, house_2, house_3, house_4, house_5]
+                  if doctor_next_fox?(house_array) && diplomat_next_horse?(house_array)
+                    CSV.open("/home/anle/dev/temp/lunch.csv", "wb") do |csv|
+                      csv << [
+                        "Nationality",
+                        "Color",
+                        "Drink",
+                        "Job",
+                        "Pet",
+                        "House"
+                      ]
+                      house_array.each do |house|
+                        csv << house.values
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+{% endhighlight %}
+
+<h3>Result</h4>
+<img src="/images/code-for-lunch/who-owns-zebra/result.png" alt="Description" ></img>
+
+
+<h3>References</h3>
+<ul>
+  <li><a href="https://en.wikipedia.org/wiki/Zebra_Puzzle"> Zebra Puzzle </a> </li>
+  <li><a href="https://codility.com/programmers/task/tape_equilibrium"> Who Owns the Zebra? </a> </li>
+</ul>
+
