@@ -5,7 +5,7 @@ layout: default
 <h3>Algorithms</h3>
 <ul class="list-unstyled">
   {% for post in site.categories.algorithms reversed %}
-    <li>
+    <li class="post">
       <a href="{{ post.url }}">{{ post.title }}</a>
     </li>
   {% endfor %}
@@ -14,7 +14,7 @@ layout: default
 <h3>Codility Tasks</h3>
 <ul class="list-unstyled">
   {% for post in site.categories.codility-lessons reversed %}
-    <li>
+    <li class="post">
       <a href="{{ post.url }}">{{ post.title }}</a>
     </li>
   {% endfor %}
@@ -23,7 +23,7 @@ layout: default
 <h3>Code for Lunch</h3>
 <ul class="list-unstyled">
   {% for post in site.categories.code-for-lunch reversed %}
-    <li>
+    <li class="post">
       <a href="{{ post.url }}">{{ post.title }}</a>
     </li>
   {% endfor %}
